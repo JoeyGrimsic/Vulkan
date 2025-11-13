@@ -29,7 +29,13 @@ right=1.3in, heightrounded]{geometry}
 \begin{document}
 \maketitle
 
+% --- This is the magic command ---
+\tableofcontents
+
+\newpage % Starts the main content on a new page
+
 \section*{Vulkan Questions}
+\addcontentsline{toc}{section}{Vulkan Questions}
 \begin{itemize}
   \item what are the things that specifically separates OpenGL and Vulkan?
   \item What is sType?
@@ -40,6 +46,7 @@ right=1.3in, heightrounded]{geometry}
 \end{itemize}
 
 \section*{What If I Use Sascha as a starting point}
+\addcontentsline{toc}{section}{What If I Use Sascha as a starting point}
 \begin{itemize}
   \item How would I work with or change this program to write a game engine?
   \item What abstractions would I want to make?
@@ -50,6 +57,7 @@ right=1.3in, heightrounded]{geometry}
 \end{itemize}
 
 \section*{Vulkan Resources}
+\addcontentsline{toc}{section}{Vulkan Resources}
 \begin{itemize}
   \item
     \href{https://github.com/SaschaWillems/Vulkan/blob/master/examples/triangle/triangle.cpp}{Vulkan
@@ -67,7 +75,9 @@ right=1.3in, heightrounded]{geometry}
 \end{itemize}
 
 \section*{Sascha Willems Helpers}
-\subsection*{\texttt{*{\_}CreateInfo and *{\_}Info}}
+\addcontentsline{toc}{section}{Sascha Willems Helpers}
+\subsection*{\_CreateInfo and \_Info}
+\addcontentsline{toc}{subsection}{\_CreateInfo and \_Info}
 I don't know what Sascha's functions are entirely for\textemdash
 except that they attempt to reduce Vulkan boilerplate. However, it
 seems that every function returns two kinds of pointers:
@@ -75,46 +85,75 @@ seems that every function returns two kinds of pointers:
 *_CreateInfo
 *_Info
 \end{verbatim}
-We are using some kind of struct\textemdash but I'm not sure what the
+\par We are using some kind of struct\textemdash but I'm not sure what the
 struct is for. The struct probably holds whatever these two kinds of
 pointers point to?
-\\\\
-So actually, the \texttt{*} in \texttt{*\_CreateInfo} and
-\texttt{*\_Info} represent the wildcard operator, and is just to show
+
+\par So actually, the \* in \*\_CreateInfo and
+\*\_Info represent the wildcard operator, and is just to show
 the naming convention in the documentation. These names refer to
 structs that have state information for Vulkan.
 
 \subsection*{Commands}
-Commands are the main part of Vulkan. Commands are how we talk
+\addcontentsline{toc}{subsection}{Commands}
+\par Commands are the main part of Vulkan. Commands are how we talk
 directly to the GPU.
-\\\\
-Commands are normally stored in a \textbf{command buffer}, so we
+
+\par Commands are normally stored in a \textbf{command buffer}, so we
 can batch them together. We usually call the act of intializing a
 command buffer \textbf{recording} the command buffer. In the Vulkan
 workflow, we will have record a command buffer using a
 \textbf{command pool}. We will have one command pool for every
 \textbf{queue family}.
 
-\clearpage
 \section*{Sascha Repository Notes}
-Git does not automatically download submodules
-\\\\
-To update submodules:
+\addcontentsline{toc}{section}{Sascha Repository Notes}
+\par Git does not automatically download submodules
+
+\par To update submodules:
 \begin{verbatim}
 git submodule update --init --recursive
 \end{verbatim}
+
+\par The following is an example clean build script specific to Wayland:
+
+\begin{verbatim}
+#!/usr/bin/env bash
+set -e
+
+BUILD_DIR="build"
+
+echo ">>> Removing old build directory..."
+rm -rf "$BUILD_DIR"
+
+echo ">>> Creating new build directory..."
+mkdir "$BUILD_DIR"
+cd "$BUILD_DIR"
+
+echo ">>> Running CMake configure..."
+cmake .. \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DUSE_WAYLAND_WSI=OFF
+
+echo ">>> Building..."
+cmake --build . -- -j"$(nproc)"
+
+# Optionally copy compile_commands.json to project root
+if [ -f compile_commands.json ]; then
+    echo ">>> Copying compile_commands.json to project root..."
+    cp compile_commands.json ..
+fi
+
+echo ">>> Done."
+\end{verbatim}
+
 Then you can run the binaries, for example:
 \begin{verbatim}
 ./build/bin/bloom
 \end{verbatim}
 
-or:
-\begin{verbatim}
-cd build/bin/
-./bloom
-\end{verbatim}
-
 \section*{Reading Through The Vulkan Tutorial}
+\addcontentsline{toc}{section}{Reading Through The Vulkan Tutorial}
 Here is a high level of how I would currently describe the Vulkan setup:
 
 \begin{enumerate}
@@ -146,7 +185,9 @@ some questions i have..
 \end{itemize}
 
 \section*{Going Through Sascha's Repository}
+\addcontentsline{toc}{section}{Going Through Sascha's Repository}
 \subsection*{Idea}
+\addcontentsline{toc}{subsection}{Idea}
 I am thinking this will be faster to learn as Sascha provides a
 standard hello triangle program (meant to be as vanilla as possible)
 and shows his evolution (you can see comments in his READ.md) of
@@ -157,10 +198,12 @@ popular repo} so we can assume others think it is good and that it is
 a valid idea for me to pursue.
 
 \subsection*{Notes On Sascha}
+\addcontentsline{toc}{subsection}{Notes On Sascha}
 \par Let's start with is Sascha's claimed vanilla hello triangle similar
 to the one in the khronos vulkan tutorial?
 
 \subsection*{Questions From Sascha's Repo:}
+\addcontentsline{toc}{subsection}{Questions From Sascha's Repo:}
 \begin{itemize}
   \item what is a descriptor set in vulkan?
   \item what is the graphics queue?
@@ -181,25 +224,30 @@ to the one in the khronos vulkan tutorial?
 \end{itemize}
 
 \section*{Theory}
+\addcontentsline{toc}{section}{Theory}
 \subsection*{Descriptor Set}
+\addcontentsline{toc}{subsection}{Descriptor Set}
 \par Descriptor sets are sets of pointers to resources that shaders
 want access to. In OpenGL, you might 'bind' one buffer at a time.
 Vulkan expects you to bind a descriptor set all together.
 \par Similar to \textbf{command pools} there are \textbf{descriptor pools}.
 
 \subsection*{Descriptor Pools}
+\addcontentsline{toc}{subsection}{Descriptor Pools}
 \par To allocate a descriptor set, we first intialize a descriptor
 pool. When setting up a descriptor pool, we tell vulkan there will be
 'x' number of sets with 'y' number of descriptors
 
 \subsection*{Fences}
+\addcontentsline{toc}{subsection}{Fences}
 \par A fence is used to sync the CPU and GPU. I don't know how it
 does this. A fence can be \textbf{signaled} by the GPU, so that the
 CPU knows that the GPU has finished drawing the frame.
 
 \subsection*{Semaphore}
+\addcontentsline{toc}{subsection}{Semaphore}
 \par Similarly, a \textbf{semaphore} is used to sync different parts
-of the GPU. Some examples of semaphores are
+of the GPU. Some examples of semaphores are:
 \begin{itemize}
   \item \textbf{renderSemaphore}
   \item \textbf{swapchainSemaphore}
@@ -208,6 +256,7 @@ of the GPU. Some examples of semaphores are
 what that is for yet.
 
 \subsection*{Projection Matrix}
+\addcontentsline{toc}{subsection}{Projection Matrix}
 \par This has something to do with how objects look when they are
 further away, maybe it does some multiplication on the location of
 the vertices on screen coordinates?
@@ -220,11 +269,13 @@ to screen space coordinates.
 \par Note: The lack of a projection matrix is called an orthographic projection.
 
 \subsection*{View Model Matrix}
+\addcontentsline{toc}{subsection}{View Model Matrix}
 \par This has something to do with the view frustum? Perhaps this is
 the matrix that we perform operations on to change the camera
 position and angle?
 
 \subsection*{Depth Stencil Image}
+\addcontentsline{toc}{subsection}{Depth Stencil Image}
 \par What is the depth stencil image? I mean stencils are like
 outlines of stuff so maybe depth stencil image draws the outlines of
 objects in the depth frame buffer? Is the Z buffer a separate frame buffer?
@@ -233,6 +284,7 @@ objects in the depth frame buffer? Is the Z buffer a separate frame buffer?
 (both the depth and stencil buffers).
 
 \subsection*{Stencil Buffer}
+\addcontentsline{toc}{subsection}{Stencil Buffer}
 \par Let's review what a stencil buffer is. It is true that a stencil
 buffer can be used for outlines, but more generally\textemdash
 stencil buffers can be thought of as masks. The concept of masking is
@@ -274,13 +326,16 @@ Final Result: You are left with only the yellow outline.
 \end{verbatim}
 
 \subsection*{Struct vs. Class}
+\addcontentsline{toc}{subsection}{Struct vs. Class}
 \par One thing that vkguide.dev has brought to my attention is when
 to use struct versus when to use a class. From my understanding, a
 struct is used for simple instances when we just need to store a
 group of data. A class can hold lots of things for example state,
 functionality, and data too.
 
-\subsection*{Vulkan 'Views' + Reading Code Snippet}
+\subsection*{Reading Code Snippet And Some Resulting Questions}
+\addcontentsline{toc}{subsection}{Reading Code Snippet And Some
+Resulting Questions}
 \par When reading through Sascha's examples I came across this segment from
 triangle.cpp:
 
@@ -303,8 +358,9 @@ snippet reveals many different questions:
 \begin{itemize}
   \item What is a \textbf{subresource}?
   \item What is an \textbf{aspect}?
-  \item What what does 'CI' mean in 'depthStencilViewCI'?
+  \item What what does '\textbf{CI}' mean in 'depthStencilViewCI'?
 \end{itemize}
+
 \par I also have some more questions as a result from this snippet:
 \begin{itemize}
   \item What kinds of things do we need a view for?
@@ -317,17 +373,52 @@ snippet reveals many different questions:
     as an engine developer?
 \end{itemize}
 
+\subsection*{What Does 'CI' Suffix Mean In Variable Names?}
+\addcontentsline{toc}{subsection}{What Does 'CI' Suffix Mean In Variable Names?}
+\par CI is actually shorthand for \textbf{Create Info}. This is
+because this variable is a \textbf{CreateInfo struct}, same as we
+mentioned earlier.
+
+\subsection*{VK View}
+\addcontentsline{toc}{subsection}{VK View}
+\par Images cannot be directly accessed in Vulkan, but instead with a
+View object. Hence the two Vulkan objects:
+\begin{itemize}
+  \item VkImage
+  \item VkImageView
+\end{itemize}
+
+\subsection*{How Does A View Relate To A Frame Buffer?}
+\addcontentsline{toc}{subsection}{How Does A View Relate To A Frame Buffer?}
+\par A frame buffer has views as attachments?
+
+\par A \textbf{VkImage} is a collection of the image's raw data and
+overall properties such as:
+\begin{itemize}
+  \item Dimension
+  \item Format
+  \item Mip Levels
+\end{itemize}
+
+\subsection*{Subresource}
+\addcontentsline{toc}{subsection}{Subresource}
+\par What is a subresource and how can it have a range?
+
 \subsection*{VK\_NULL\_HANDLE}
+\addcontentsline{toc}{subsection}{VK\_NULL\_HANDLE}
 \par Weirdly, the VK\_NULL\_HANDLE is an integer, and not a null
 pointer or something like that. We use VK\_NULL\_HANDLE| when we
 are declaring some Vulkan object without giving it a value.
 
 \subsection*{Ticket Number}
+\addcontentsline{toc}{subsection}{Ticket Number}
 What is a \textbf{ticket number}? What does it mean if there is an
 \textbf{empty ticket number}? What is a \textbf{ticket slot}, and
 what does it mean for it to be empty (0)?
 
 \subsection*{How is initialization abstracted with Sascha's Framework?}
+\addcontentsline{toc}{subsection}{How is initialization abstracted
+with Sascha's Framework?}
 \par The following is a snippet from a conversation with Gemini 2.5 Pro:
 \begin{verbatim}
 Before: Raw Vulkan (What we discussed)
@@ -373,9 +464,19 @@ VkDescriptorSetLayoutCreateInfo layoutInfo =
 \end{verbatim}
 This example may prove useful when learning Sascha's framework.
 
+\subsection*{What is multisampling (MSAA?)}
+\addcontentsline{toc}{subsection}{What is multisampling (MSAA?)}
+\par Multisampling (MSAA) is a method of anti aliasing. Aliasing happens
+when a single sample inside of the pixel does not detect the
+sub\-pixel fragment, so the result of the pixel can become an
+artifact. Sub\-pixel artifacting are called \textbf{jaggies}, which
+are a result of aliasing. To address this issue, we have multiple
+sub\-pixel samples\textemdash hence the name.
+
 \clearpage
 
 \section*{Appendix}
+\addcontentsline{toc}{section}{Appendix}
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=0.95\textwidth]{figures/vulkanpipeline.png}
