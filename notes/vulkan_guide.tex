@@ -1,0 +1,393 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\graphicspath{{figures/}}  % then \includegraphics{createmode_0.jpg}
+% for color box
+\usepackage{tcolorbox}
+\tcbuselibrary{listings, skins, breakable}
+% math
+\usepackage{amsmath, amssymb, amsthm}
+% for float formatting options
+\usepackage{float}
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, fit}
+% for tikz formatting
+\usepackage{adjustbox}
+% for links
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=magenta,
+citecolor=violet]{hyperref}
+
+\title{Vulkan Notes}
+\author{Joseph Grimsic}
+\date{November 2025}
+\usepackage[letterpaper, top=1.3in, bottom=1.3in, left=1.3in,
+right=1.3in, heightrounded]{geometry}
+\renewcommand{\baselinestretch}{1.15} % Line spacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em}
+\begin{document}
+\maketitle
+
+\section*{Vulkan Questions}
+\begin{itemize}
+  \item what are the things that specifically separates OpenGL and Vulkan?
+  \item What is sType?
+  \item What is a command pool?
+  \item How can we abstract commands/ should we?
+  \item Do we need to work with commands regularly to parallelize our
+    game engine?
+\end{itemize}
+
+\section*{What If I Use Sascha as a starting point}
+\begin{itemize}
+  \item How would I work with or change this program to write a game engine?
+  \item What abstractions would I want to make?
+  \item What if I am a solo dev—does that change how I should abstract things?
+  \item How can I black box the lesser parts of Vulkan I don't need
+    to know that deeply?
+  \item What levels of abstraction will I usually be using?
+\end{itemize}
+
+\section*{Vulkan Resources}
+\begin{itemize}
+  \item
+    \href{https://github.com/SaschaWillems/Vulkan/blob/master/examples/triangle/triangle.cpp}{Vulkan
+    Triangle Example}
+  \item \href{https://github.com/KhronosGroup/Vulkan-Hpp}{Vulkan Helper?}
+
+  \item
+    \href{https://www.reddit.com/r/GraphicsProgramming/comments/tc9d2u/the_current_state_of_gpu_apis_and_why_i_wish_vez/}{Interesting
+    opinions on Vulkan}
+
+  \item
+    \href{https://docs.vulkan.org/tutorial/latest/00_Introduction.html}{Vulkan
+    Tutorial By Khronos Group}
+  \item \href{https://vkguide.dev/}{vkguide.dev}
+\end{itemize}
+
+\section*{Sascha Willems Helpers}
+\subsection*{\texttt{*{\_}CreateInfo and *{\_}Info}}
+I don't know what Sascha's functions are entirely for\textemdash
+except that they attempt to reduce Vulkan boilerplate. However, it
+seems that every function returns two kinds of pointers:
+\begin{verbatim}
+*_CreateInfo
+*_Info
+\end{verbatim}
+We are using some kind of struct\textemdash but I'm not sure what the
+struct is for. The struct probably holds whatever these two kinds of
+pointers point to?
+\\\\
+So actually, the \texttt{*} in \texttt{*\_CreateInfo} and
+\texttt{*\_Info} represent the wildcard operator, and is just to show
+the naming convention in the documentation. These names refer to
+structs that have state information for Vulkan.
+
+\subsection*{Commands}
+Commands are the main part of Vulkan. Commands are how we talk
+directly to the GPU.
+\\\\
+Commands are normally stored in a \textbf{command buffer}, so we
+can batch them together. We usually call the act of intializing a
+command buffer \textbf{recording} the command buffer. In the Vulkan
+workflow, we will have record a command buffer using a
+\textbf{command pool}. We will have one command pool for every
+\textbf{queue family}.
+
+\clearpage
+\section*{Sascha Repository Notes}
+Git does not automatically download submodules
+\\\\
+To update submodules:
+\begin{verbatim}
+git submodule update --init --recursive
+\end{verbatim}
+Then you can run the binaries, for example:
+\begin{verbatim}
+./build/bin/bloom
+\end{verbatim}
+
+or:
+\begin{verbatim}
+cd build/bin/
+./bloom
+\end{verbatim}
+
+\section*{Reading Through The Vulkan Tutorial}
+Here is a high level of how I would currently describe the Vulkan setup:
+
+\begin{enumerate}
+  \item create instance
+  \item device selection
+  \item create window
+  \item then some other stuff
+\end{enumerate}
+
+here is my second attempt at that
+\begin{enumerate}
+  \item create instance + device selection
+  \item queue families stuff
+  \item create window + swapchain
+  \item framebuffer stuff
+  \item probably something else
+\end{enumerate}
+
+\par we are getting closer, but honestly maybe it's not that important. i
+am considering reading throught the vulkan tutorial but i am unsure
+as when to just jump in. i could probably save some time in the
+future by reading a little bit now but i suspect i will not retain
+that much information. i guess i will take some notes.
+\par first i will skip to the hello triangle in their example and think of
+some questions i have..
+\par some things that stand out to me:
+\begin{itemize}
+  \item item (will i finish?)
+\end{itemize}
+
+\section*{Going Through Sascha's Repository}
+\subsection*{Idea}
+I am thinking this will be faster to learn as Sascha provides a
+standard hello triangle program (meant to be as vanilla as possible)
+and shows his evolution (you can see comments in his READ.md) of
+abstractions. This will likely make the most sense to study because
+we know that Sascha has a
+\href{https://github.com/SaschaWillems/Vulkan?tab=readme-ov-file}{very
+popular repo} so we can assume others think it is good and that it is
+a valid idea for me to pursue.
+
+\subsection*{Notes On Sascha}
+\par Let's start with is Sascha's claimed vanilla hello triangle similar
+to the one in the khronos vulkan tutorial?
+
+\subsection*{Questions From Sascha's Repo:}
+\begin{itemize}
+  \item what is a descriptor set in vulkan?
+  \item what is the graphics queue?
+  \item what is a vk semaphore?
+  \item what is vk device?
+  \item what is vk null handle?
+  \item what is vk descriptor set?
+  \item what is vk null handle?
+  \item what is vk pipeline layout?
+  \item how to read/write to a glm::mat4?
+  \item what is vk descriptor set layout?
+  \item how do we interact with vk command pool?
+  \item what does this do?
+  \begin{verbatim}
+  VulkanExample() : VulkanExampleBase() {
+  \end{verbatim}
+
+\end{itemize}
+
+\section*{Theory}
+\subsection*{Descriptor Set}
+\par Descriptor sets are sets of pointers to resources that shaders
+want access to. In OpenGL, you might 'bind' one buffer at a time.
+Vulkan expects you to bind a descriptor set all together.
+\par Similar to \textbf{command pools} there are \textbf{descriptor pools}.
+
+\subsection*{Descriptor Pools}
+\par To allocate a descriptor set, we first intialize a descriptor
+pool. When setting up a descriptor pool, we tell vulkan there will be
+'x' number of sets with 'y' number of descriptors
+
+\subsection*{Fences}
+\par A fence is used to sync the CPU and GPU. I don't know how it
+does this. A fence can be \textbf{signaled} by the GPU, so that the
+CPU knows that the GPU has finished drawing the frame.
+
+\subsection*{Semaphore}
+\par Similarly, a \textbf{semaphore} is used to sync different parts
+of the GPU. Some examples of semaphores are
+\begin{itemize}
+  \item \textbf{renderSemaphore}
+  \item \textbf{swapchainSemaphore}
+\end{itemize}
+\par There is also a \textbf{complete semaphore}, but I don't know
+what that is for yet.
+
+\subsection*{Projection Matrix}
+\par This has something to do with how objects look when they are
+further away, maybe it does some multiplication on the location of
+the vertices on screen coordinates?
+
+\par This is close. It has to do with a matrix multiplication on the
+3d vertices of an object, altering how it looks from far away. The
+projection matrix is part of the pipeline to get objects in 3d space
+to screen space coordinates.
+
+\par Note: The lack of a projection matrix is called an orthographic projection.
+
+\subsection*{View Model Matrix}
+\par This has something to do with the view frustum? Perhaps this is
+the matrix that we perform operations on to change the camera
+position and angle?
+
+\subsection*{Depth Stencil Image}
+\par What is the depth stencil image? I mean stencils are like
+outlines of stuff so maybe depth stencil image draws the outlines of
+objects in the depth frame buffer? Is the Z buffer a separate frame buffer?
+
+\par So a depth stencil image is actually a combination of buffers
+(both the depth and stencil buffers).
+
+\subsection*{Stencil Buffer}
+\par Let's review what a stencil buffer is. It is true that a stencil
+buffer can be used for outlines, but more generally\textemdash
+stencil buffers can be thought of as masks. The concept of masking is
+where you can think of separating layers. So you may 'cutout' a layer
+by masking, so that you can see to the next layer.
+
+\par Another way to think of this as a subtractive process. Here is
+an excerpt from a conversation with Gemini 2.5 Pro:
+\begin{verbatim}
+Pass 1: Draw the Object (to create the "cutout" mask).
+        Turn off writing to the color and depth buffers.
+        Turn on writing to the stencil buffer.
+        Set the stencil operation to: "If a pixel passes the depth test,
+        write the value 1 into the stencil buffer."
+        Draw your mesh.
+
+        Result: The screen looks unchanged, but the stencil buffer now
+        contains a perfect silhouette (a "mask") of your object, filled
+        with the number 1. Everything else is 0.
+
+    Pass 2: Draw the Outline (the "big yellow" version).
+        Turn on writing to the color buffer (so we can see the yellow).
+        Turn off writing to the depth buffer (this prevents the outline
+        from messing up future depth tests).
+        Set the stencil test to: "Only draw a pixel if the stencil buffer value
+        at that location is NOT 1 (i.e., it's 0)."
+        Draw a slightly larger version of your mesh, all in yellow.
+
+    The "Cutout" Happens:
+
+        The GPU starts to draw the big yellow mesh.
+        Where the original object was (the "inner layer"), the stencil buffer
+        has a 1. The test (stencil_value != 1) fails, and the yellow pixel is
+        discarded. This is your "cutout"!
+
+        On the larger edges of the yellow mesh (the "thickness" you mentioned), the pixel falls outside the original silhouette. The stencil buffer there is 0. The test (stencil_value == 0) passes, and the yellow pixel is drawn.
+
+Final Result: You are left with only the yellow outline.
+\end{verbatim}
+
+\subsection*{Struct vs. Class}
+\par One thing that vkguide.dev has brought to my attention is when
+to use struct versus when to use a class. From my understanding, a
+struct is used for simple instances when we just need to store a
+group of data. A class can hold lots of things for example state,
+functionality, and data too.
+
+\subsection*{Vulkan 'Views' + Reading Code Snippet}
+\par When reading through Sascha's examples I came across this segment from
+triangle.cpp:
+
+\begin{verbatim}
+// Create a view for the depth stencil image
+// Images aren't directly accessed in Vulkan, but rather through views
+// described by a subresource range This allows for multiple views of one
+// image with differing ranges (e.g. for different layers)
+VkImageViewCreateInfo depthStencilViewCI{};
+depthStencilViewCI.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+depthStencilViewCI.viewType = VK_IMAGE_VIEW_TYPE_2D;
+depthStencilViewCI.format = depthFormat;
+depthStencilViewCI.subresourceRange = {};
+depthStencilViewCI.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+\end{verbatim}
+
+\par What is a view? It seems that we first initialize the view and
+then there are several instance variables we set for it. This code
+snippet reveals many different questions:
+\begin{itemize}
+  \item What is a \textbf{subresource}?
+  \item What is an \textbf{aspect}?
+  \item What what does 'CI' mean in 'depthStencilViewCI'?
+\end{itemize}
+\par I also have some more questions as a result from this snippet:
+\begin{itemize}
+  \item What kinds of things do we need a view for?
+  \item Does Sascha abstract some of this 'state stuff' away when
+    intializing a view?
+  \item What does an all caps variable like
+    'VK\_STRUCTURE\_TYPE\_IMAGE\_VIEW\_CREATE\_INFO'| mean again? Is it a
+    global constant?
+  \item \textemdash and finally, how much of this is important to me
+    as an engine developer?
+\end{itemize}
+
+\subsection*{VK\_NULL\_HANDLE}
+\par Weirdly, the VK\_NULL\_HANDLE is an integer, and not a null
+pointer or something like that. We use VK\_NULL\_HANDLE| when we
+are declaring some Vulkan object without giving it a value.
+
+\subsection*{Ticket Number}
+What is a \textbf{ticket number}? What does it mean if there is an
+\textbf{empty ticket number}? What is a \textbf{ticket slot}, and
+what does it mean for it to be empty (0)?
+
+\subsection*{How is initialization abstracted with Sascha's Framework?}
+\par The following is a snippet from a conversation with Gemini 2.5 Pro:
+\begin{verbatim}
+Before: Raw Vulkan (What we discussed)
+
+You have to manually zero-initialize every struct and set every single
+member, including the sType.
+
+// 1. Define the binding
+VkDescriptorSetLayoutBinding uboBinding{};
+uboBinding.sType = ... // Easy to forget! Oh wait, this one doesn't have sType.
+uboBinding.binding = 0;
+uboBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+uboBinding.descriptorCount = 1;
+uboBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+uboBinding.pImmutableSamplers = nullptr;
+
+// 2. Define the create info
+VkDescriptorSetLayoutCreateInfo layoutInfo{};
+layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+layoutInfo.pNext = nullptr;
+layoutInfo.flags = 0;
+layoutInfo.bindingCount = 1;
+layoutInfo.pBindings = &uboBinding;
+
+After: With Sascha Willems' vks::initializers
+
+He provides helper functions that act as "constructors" for these C structs.
+They take the important parameters and set all the other members (sType, pNext,
+flags, etc.) to correct default values.
+
+// 1. Define the binding (one line)
+VkDescriptorSetLayoutBinding uboBinding =
+    vks::initializers::descriptorSetLayoutBinding(
+        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0); // type, stage, binding
+
+// 2. Define the create info (one line)
+VkDescriptorSetLayoutCreateInfo layoutInfo =
+    vks::initializers::descriptorSetLayoutCreateInfo(
+        &uboBinding,
+        1); // pBindings, bindingCount
+\end{verbatim}
+This example may prove useful when learning Sascha's framework.
+
+\clearpage
+
+\section*{Appendix}
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{figures/vulkanpipeline.png}
+  \end{center}
+  \caption{Vulkan Pipeline (Why is it so low res :())}\label{fig:}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{figures/vulkanpipeline2.png}
+  \end{center}
+  \caption{Vulkan Pipeline (Why is it so low res :())}\label{fig:}
+\end{figure}
+
+\end{document}
