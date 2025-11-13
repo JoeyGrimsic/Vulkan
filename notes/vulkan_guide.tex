@@ -513,7 +513,77 @@ different primitive types? Like overloading function sum so that
 sum(int a, int b) and sum(double a, double b)? What makes templates
 different than classes? Do we use headers for them too?
 
-\subsection*{}
+\section*{What Is A Valid Starting Point For My Game Engine?}
+\subsection*{Reading Through Gemini's Synopsis}
+\par To start, I will read through Gemini's overview of Sascha
+Willems' trianglevulkan13 example. The following is such:
+
+% Begin large gemini latex segment
+\subsection*{High-level pseudocode: Basic indexed triangle (Vulkan 1.3)}
+
+This example initializes a minimal Vulkan application that renders a
+single indexed triangle using Vulkan 1.3 dynamic rendering and
+per-frame uniform buffers.
+
+\begin{enumerate}
+  \item Create the application object and parse command-line
+    arguments. Configure a simple look-at camera and request Vulkan
+    API version \texttt{VK\_API\_VERSION\_1\_3}, enabling the
+    \texttt{dynamicRendering} and \texttt{synchronization2} features.
+  \item Initialize Vulkan: create an instance, select a compatible
+    physical device, create a logical device and graphics queue, and
+    cache device properties and memory capabilities for later allocations.
+  \item Prepare global state and resources used across frames:
+    determine swapchain color/depth formats and reserve per-frame
+    arrays sized by \texttt{MAX\_CONCURRENT\_FRAMES} for in-flight resources.
+  \item Create synchronization primitives: one fence per in-flight
+    frame (initially signaled) and semaphores to coordinate image
+    acquisition and render completion.
+  \item Create one command pool and allocate one primary command
+    buffer per in-flight frame.
+  \item Build vertex and index data for a triangle; compute buffer
+    sizes and the index count.
+  \item Create a host-visible staging buffer, map it, and copy both
+    vertex and index data into that single mapped region.
+  \item Create device-local vertex and index buffers (with transfer
+    destination usage), allocate device-local memory for each, and bind them.
+  \item Record and submit a short command buffer that copies the
+    ranges from the staging buffer into the device-local buffers; use
+    a temporary fence to wait for completion, then free the staging buffer.
+  \item Define a uniform block type containing projection, view and
+    model matrices and create one host-visible, coherent uniform
+    buffer per in-flight frame; map them persistently for fast updates.
+  \item Create a descriptor pool and a descriptor set layout for a
+    single uniform buffer binding; allocate and update one descriptor
+    set per in-flight frame to point at the corresponding uniform buffer.
+  \item Create a pipeline layout using the descriptor set layout,
+    then build the graphics pipeline: load SPIR-V shaders, configure
+    vertex input bindings/attributes, input assembly, rasterization,
+    depth/stencil, multisampling, color blend and dynamic
+    viewport/scissor, and attach dynamic rendering formats.
+  \item Allocate and bind a device-local depth image and create an
+    image view for depth/stencil usage.
+  \item In the render loop: wait on the current frame fence, acquire
+    the next swapchain image (handling out-of-date/suboptimal by
+    resizing), update the mapped uniform buffer for the current
+    frame, reset and begin the command buffer.
+  \item Insert image memory barriers to transition color and depth
+    images to attachment-optimal layouts, begin a dynamic rendering
+    section, set viewport and scissor dynamically, bind pipeline and
+    the current frame's descriptor set, bind vertex and index
+    buffers, and issue a single indexed draw call; end rendering and
+    transition the color image to present layout.
+  \item Submit the command buffer waiting on the present semaphore
+    and signaling a render-complete semaphore; pass the per-frame
+    fence for GPU completion tracking. Present the image using
+    \texttt{vkQueuePresentKHR}, handling resizing if necessary, and
+    advance the current frame index modulo \texttt{MAX\_CONCURRENT\_FRAMES}.
+  \item On shutdown, wait for device idle and clean up: destroy
+    pipelines, pipeline layout, descriptor set layout and pool,
+    buffers and their memories, image views and images, semaphores,
+    fences, command pool and swapchain resources; delete the application object.
+\end{enumerate}
+% End large gemini latex segment
 
 \clearpage
 
