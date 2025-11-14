@@ -36,6 +36,7 @@ right=1.3in, heightrounded]{geometry}
 
 \section*{Vulkan Questions}
 \addcontentsline{toc}{section}{Vulkan Questions}
+\addcontentsline{toc}{section}{Vulkan Questions}
 \begin{itemize}
   \item what are the things that specifically separates OpenGL and Vulkan?
   \item What is sType?
@@ -333,7 +334,6 @@ group of data. A class can hold lots of things for example state,
 functionality, and data too.
 
 \subsection*{Reading Code Snippet And Some Resulting Questions}
-\addcontentsline{toc}{subsection}{Reading Code Snippet And Some Resulting Questions}
 \addcontentsline{toc}{subsection}{Reading Code Snippet And Some
 Resulting Questions}
 \addcontentsline{toc}{subsection}{Reading Code Snippet And Some
@@ -421,7 +421,6 @@ What is a \textbf{ticket number}? What does it mean if there is an
 what does it mean for it to be empty (0)?
 
 \subsection*{How is initialization abstracted with Sascha's Framework?}
-\addcontentsline{toc}{subsection}{How is initialization abstracted with Sascha's Framework?}
 \addcontentsline{toc}{subsection}{How is initialization abstracted
 with Sascha's Framework?}
 \addcontentsline{toc}{subsection}{How is initialization abstracted
@@ -496,7 +495,6 @@ tools/features that you are going to be using from the GPU.
 
 % Begin large gemini latex segment
 \subsection*{High-level pseudocode: Basic indexed triangle (Vulkan 1.3)}
-\addcontentsline{toc}{subsection}{High-level pseudocode: Basic indexed triangle (Vulkan 1.3)}
 \addcontentsline{toc}{subsection}{High-level pseudocode: Basic
 indexed triangle (Vulkan 1.3)}
 \addcontentsline{toc}{subsection}{High-level pseudocode: Basic
@@ -619,7 +617,6 @@ out that it can be used to call specific functions in an inheritance
 hierarchy. How does this work?
 
 \section*{What Is A Valid Starting Point For My Game Engine?}
-\addcontentsline{toc}{section}{What Is A Valid Starting Point For My Game Engine?}
 \addcontentsline{toc}{section}{What Is A Valid Starting Point For My
 Game Engine?}
 \addcontentsline{toc}{section}{What Is A Valid Starting Point For My
