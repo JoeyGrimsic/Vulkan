@@ -899,6 +899,38 @@ buffers are for, and it is usually a 5 step process to initialize them:
     \textit{vkCmdDrawIndexedIndirect()}
 \end{enumerate}
 
+\subsection*{The Render Queue}\addcontentsline{toc}{subsection}{The
+Render Queue}
+\par So one of the important "bridges" between a game and Vulkan is
+the concept of the \textit{Render Queue}. In the game, there will be
+objects that have properties, like their x,y,z position, and their rotation.
+
+The idea of the render queue is that it has a method called
+submit(obj), where the render queue unpacks the object and it's state
+to send to be turned into a draw call
+
+\subsection*{Entity Component
+System}\addcontentsline{toc}{subsection}{Entity Component System}
+\par So I guess the idea of the the entity component system is that
+we don't store data as objects, but as an index in a group of arrays.
+The arrays each hold piece of data that the objects have; an example
+would be an array of model matrices. The reason we do this is because
+of CPU cache coherence. When the renderer is submitting the draw
+calls, if we used the struct of arrays approach, then we can get a
+performance bonus. The bonus comes from the fact that we don't need
+to render unecessary data (in the context of rendering we don't need
+to know an entity's health)
+
+\subsection*{Particle System}\addcontentsline{toc}{subsection}{Particle System}
+\par What happens if we are doing a physics simulation and we want a
+ton of small objects? The problem is that if we decide to add them to
+our entity component system, we could be adding hundreds or thousands
+of object id's. One effect of this is that we would do culling checks
+for all of them individually. Overall, our render queue has
+a lot more work to do. This is expensive and suboptimal.
+
+\par Instead, we treat the physics simulation as one entity, with a big
+
 % END VULKAN
 
 \clearpage
@@ -2597,7 +2629,25 @@ some fundamental setup.
 \subsection*{Trying To Understand Existing Camera
 Implementation}\addcontentsline{toc}{subsection}{Trying To Understand
 Existing Camera Implementation}
-\par
+\par From what it seems, when we have a camera it writes to
+descriptors, and that is how it affects the draw calls.
+
+\subsection*{Analyzing Instancing
+Sample}\addcontentsline{toc}{subsection}{Analyzing Instancing Sample}
+\par So I am trying to understand this sample, but it uses render
+pass, which is outdated functionality.
+
+\par I want to learn modern vulkan, so if I am going to start from
+this sample, then I need to re-design all of the old synchronization
+stuff and re-design the renderpass stuff.
+
+\par While researching I came across the idea of RAII, once more. I
+keep seeing this idea everywhere, but I don't understand what it is
+and why it's important.
+
+\par I should really try to abstract vulkan to some classes and
+interfaces, that way I can actually start making a game? I don't
+really understand what is boilerplate that I can abstract and what's not
 
 % END ALREADY HAVE
 \clearpage
