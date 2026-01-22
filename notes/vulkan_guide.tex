@@ -1138,6 +1138,18 @@ some more examples:
 
 \subsection*{Module}\addcontentsline{toc}{subsection}{Module}
 \par What is a module in CPP? Should I use them?
+
+\subsection*{RAII}\addcontentsline{toc}{subsection}{RAII}
+\par RAII is the idea of writing a class with a destructor, and
+attaching it to a smart pointer (Or some other stack-allocated
+object). This way, when the smart pointer goes out of scope, the
+resources are deallocated automatically, without manual delete calls.
+
+\subsection*{Header Only
+Development}\addcontentsline{toc}{subsection}{Header Only Development}
+\par A funny but maybe powerful way of using cpp is implementing all
+of your classes in .hpp files. The compiler treats them as inline
+functions, so that they can be included into a cpp file and just work.
 % END CPP
 
 \section*{What Is A Valid Starting Point For My Game Engine?}
