@@ -1150,6 +1150,22 @@ Development}\addcontentsline{toc}{subsection}{Header Only Development}
 \par A funny but maybe powerful way of using cpp is implementing all
 of your classes in .hpp files. The compiler treats them as inline
 functions, so that they can be included into a cpp file and just work.
+
+\subsection*{Factory Pattern}\addcontentsline{toc}{subsection}{Factory Pattern}
+\par So in pursuit of abstracting the instancing sample in
+vulkan-samples, one of the first abstractions is working with VkBuffer.
+
+\par I don't fully understand the process of allocating a VkBuffer,
+but the point is that there are several different configurations that
+you may want.
+
+\par Firstly, I generated a header-only class to simplify the
+creation of a VkBuffer into one constructor call (albeit, I am unsure
+if Gemini introduced any bugs in this code)
+
+\par The next step I would think is to have another class that gives
+me several options for generating the config structs, so that I don't
+need to manually write them out every time.
 % END CPP
 
 \section*{What Is A Valid Starting Point For My Game Engine?}
